@@ -1,0 +1,28 @@
+services:
+  wordpress:
+    volumes:
+      - db:./test/wordpress
+  database:
+    volumes:
+      - static:./test/database
+
+
+volumes:
+  db:
+    name: db
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${VOLUME_PATH}/db
+  static:
+    name: static
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${VOLUME_PATH}/static
+
+networks:
+  inception:
+    driver: bridge
