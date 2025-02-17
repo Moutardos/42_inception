@@ -1,11 +1,29 @@
 services:
-  wordpress:
-    volumes:
-      - db:./test/wordpress
-  database:
-    volumes:
-      - static:./test/database
 
+  nginx:
+    container_name: nginx
+    build: "requirements/nginx/"
+    volumes:
+      - static:${WWW_DIR}
+    networks:
+      - network
+    ports:
+      - "443:443"
+    restart: always
+    env_file:
+      - .env
+  # wordpress:
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #       - static:${WWW_DIR}
+  #   networks:
+  #     - inception
+  # mariadb:
+  #   volumes:
+  #     - db:${DB_DIR}
+  #   networks:
+  #     - inception
 
 volumes:
   db:
@@ -24,5 +42,5 @@ volumes:
       device: ${VOLUME_PATH}/static
 
 networks:
-  inception:
+  network:
     driver: bridge
