@@ -3,6 +3,10 @@ services:
   nginx:
     container_name: nginx
     build: "requirements/nginx/"
+
+  nginx:
+    container_name: nginx
+    build: "requirements/nginx/"
     volumes:
       - static:${WWW_DIR}
     networks:
@@ -13,17 +17,31 @@ services:
     env_file:
       - .env
   # wordpress:
+  #   container_name: wordpress
+  #   build: "requirements/wordpress/"
   #   env_file:
   #     - .env
   #   volumes:
   #       - static:${WWW_DIR}
   #   networks:
-  #     - inception
-  # mariadb:
-  #   volumes:
-  #     - db:${DB_DIR}
-  #   networks:
-  #     - inception
+  #     - network
+  #   restart: always
+
+  mariadb:
+    container_name: maria-db
+    build: "requirements/mariadb/"
+    env_file:
+      - .env
+    volumes:
+      - db:${DB_DIR}
+    networks:
+      - network
+    restart: always
+    healthcheck:
+      test: ["CMD", "mariadb-check", "$MARIA_DB_NAME"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
 
 volumes:
   db:
@@ -42,5 +60,6 @@ volumes:
       device: ${VOLUME_PATH}/static
 
 networks:
+  network:
   network:
     driver: bridge
