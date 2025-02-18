@@ -34,11 +34,16 @@ clean/volumes:
 	$(VOLUME) rm -f $$($(VOLUME) ls -q)
 .PHONY: clean/volumes
 
-rebuild: compose/build all
-rebuild-d: compose/build all
+clean/all: clean/containers clean/volumes
+.PHONY: clean/all
+
+rebuild: clean compose/build all
+.PHONY: rebuild
 
 clean: compose/down
 	sudo rm -rf $(VOLUME_PATH)/db $(VOLUME_PATH)/static
+.PHONY: clean
 
 re: clean
 	make all
+.PHONY: re

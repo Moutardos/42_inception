@@ -3,10 +3,6 @@ services:
   nginx:
     container_name: nginx
     build: "requirements/nginx/"
-
-  nginx:
-    container_name: nginx
-    build: "requirements/nginx/"
     volumes:
       - static:${WWW_DIR}
     networks:
@@ -16,17 +12,23 @@ services:
     restart: always
     env_file:
       - .env
-  # wordpress:
-  #   container_name: wordpress
-  #   build: "requirements/wordpress/"
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #       - static:${WWW_DIR}
-  #   networks:
-  #     - network
-  #   restart: always
-
+    depends_on:
+      - wordpress
+  wordpress:
+    container_name: wordpress
+    build: "requirements/wordpress/"
+    env_file:
+      - .env
+    volumes:
+        - static:${WWW_DIR}
+    networks:
+      - network
+    restart: always
+    expose:
+      - "9000"
+    depends_on:
+      mariadb:
+        condition: service_healthy
   mariadb:
     container_name: maria-db
     build: "requirements/mariadb/"
@@ -60,6 +62,5 @@ volumes:
       device: ${VOLUME_PATH}/static
 
 networks:
-  network:
   network:
     driver: bridge
