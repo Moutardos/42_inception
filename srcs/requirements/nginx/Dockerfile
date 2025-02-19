@@ -8,11 +8,23 @@ RUN apt-get update && \
 		nginx \
 		openssl
 
-RUN mkdir -p /etc/nginx/ssl/
+RUN mkdir -p  /etc/nginx/ssl/ \
+	&& mkdir -p ${WWW_DIR} \
+	&& chmod -R g+w  ${WWW_DIR}\
+	&& chown -R www-data:0 ${WWW_DIR}
 
-RUN  openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/inception.key -out /etc/nginx/ssl/inception.crt -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=lcozdenm.42.fr/UID=login"
+VOLUME ${WWW_DIR}
+
+RUN ln -sf /dev/sdout /var/log/nginx/access.log \
+	&& ln -sf /dev/sdout /var/log/nginx/error.log
+RUN  openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout  /etc/nginx/ssl/inception.key -out /etc/nginx/ssl/inception.crt -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=lcozdenm.42.fr/UID=login"
+
+RUN chown -R www-data:0 /etc/nginx/ssl/ \
+	&& chmod -R 550 /etc/nginx/ssl/
 
 COPY nginx.conf /etc/nginx/nginx.conf
+RUN ls -al /etc/nginx/ssl/inception.*
+RUN cat /etc/nginx/nginx.conf
 
 ENTRYPOINT ["nginx"]
 CMD ["-g", "daemon off;"]

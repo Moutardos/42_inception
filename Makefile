@@ -2,12 +2,10 @@ VOLUME_PATH=/home/kali/data
 DOCKER=docker
 CONTAINER=$(DOCKER) container
 COMPOSE_FILE=srcs/docker-compose.yml
-COMPOSE=$(DOCKER) compose -f $(COMPOSE_FILE)
+COMPOSE=$(DOCKER) compose -f  $(COMPOSE_FILE) 
 VOLUME=$(DOCKER) volume
-
-all: create_dir compose/up
-
-all-d: create_dir compose/up-d
+IMAGE=$(DOCKER) image
+all: create_dir compose/up-build
 
 create_dir:
 	mkdir -p $(VOLUME_PATH)/db $(VOLUME_PATH)/static
@@ -16,9 +14,9 @@ compose/%:
 	$(COMPOSE) $(@F) 
 .PHONY: compose/% 
 
-compose/up-d:
-	$(COMPOSE) up -d
-.PHONY: compose/up-d
+compose/up-build:
+	$(COMPOSE) up --build 
+.PHONY: compose/up-build
 
 
 bash/%:
@@ -34,8 +32,16 @@ clean/volumes:
 	$(VOLUME) rm -f $$($(VOLUME) ls -q)
 .PHONY: clean/volumes
 
-clean/all: clean/containers clean/volumes
+clean/images:
+	$(IMAGE) rm -f $$($(IMAGE) ls -q)
+
+clean/buildx:
+	$(DOCKER) buildx prune -f
+
+nuke/all: clean/images clean/volumes clean/buildx clean/containers
+
 .PHONY: clean/all
+
 
 rebuild: clean compose/build all
 .PHONY: rebuild

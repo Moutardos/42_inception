@@ -2,7 +2,11 @@ services:
 
   nginx:
     container_name: nginx
-    build: "requirements/nginx/"
+    build: 
+      context: "requirements/nginx/"
+      args:
+        - WWW_DIR
+        - SSL_DIR
     volumes:
       - static:${WWW_DIR}
     networks:
@@ -24,8 +28,6 @@ services:
     networks:
       - network
     restart: always
-    expose:
-      - "9000"
     depends_on:
       mariadb:
         condition: service_healthy

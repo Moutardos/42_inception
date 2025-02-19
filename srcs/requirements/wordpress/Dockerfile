@@ -11,9 +11,11 @@ RUN apt-get update && \
 		curl \
 		tar
 
+COPY www.conf /etc/php/8.2/fpm/pool.d/www.conf 
 
 COPY wp_script.sh /tmp/wp_script.sh 
 RUN chmod +x /tmp/wp_script.sh
 EXPOSE 9000
 
-CMD /tmp/wp_script.sh && php-fpm
+ENTRYPOINT [ "/tmp/wp_script.sh" ] 
+CMD [ "php-fpm8.2", "-F"]
