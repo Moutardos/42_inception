@@ -9,7 +9,9 @@ RUN apt-get update && \
 		php-fpm \
 		php-mysql \
 		curl \
-		tar
+		tar \
+		mariadb-client
+
 
 COPY www.conf /etc/php/8.2/fpm/pool.d/www.conf 
 
