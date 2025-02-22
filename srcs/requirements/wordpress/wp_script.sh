@@ -16,6 +16,7 @@ if [ ! -f ${WWW_DIR}/.done ]; then
 	./wp-cli.phar user create ${WP_USER_NAME} ${WP_USER_MAIL} --user_pass=${WP_USER_PASSWORD} --allow-root
 	./wp-cli.phar rewrite structure '/%year%/%monthnum%/%postname%/' --allow-root
 	./wp-cli.phar user list --fields=ID,user_login,roles --allow-root
+	./wp-cli.phar theme install twentytwentyfour --activate --allow-root
 	chown -R www-data:www-data ${WWW_DIR}
 	chmod -R g+w ${WWW_DIR}
 
