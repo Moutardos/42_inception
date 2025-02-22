@@ -20,7 +20,11 @@ services:
       - wordpress
   wordpress:
     container_name: wordpress
-    build: "requirements/wordpress/"
+    build:
+      context: "requirements/wordpress/"
+      args:
+        - WWW_DIR
+        - SSL_DIR
     env_file:
       - .env
     volumes:
@@ -29,8 +33,7 @@ services:
       - network
     restart: always
     depends_on:
-      mariadb:
-        condition: service_healthy
+      - mariadb
   mariadb:
     container_name: maria-db
     build: "requirements/mariadb/"
@@ -41,11 +44,6 @@ services:
     networks:
       - network
     restart: always
-    healthcheck:
-      test: ["CMD", "mariadb-check", "$MARIA_DB_NAME"]
-      interval: 10s
-      timeout: 10s
-      retries: 10
 
 volumes:
   db:

@@ -14,7 +14,7 @@ COPY script.sh /tmp/script.sh
 
 RUN	chmod +x /tmp/script.sh
 
-COPY my.cnf /etc/my.cnf
+COPY my.cnf /root/.my.cnf
 
 RUN mkdir -p /run/mysqld && chown -R mysql:mysql /run/mysqld
 RUN mkdir -p /var/lib/mysql && chown -R mysql:mysql /var/lib/mysql
